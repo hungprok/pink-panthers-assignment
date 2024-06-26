@@ -12,8 +12,8 @@ module.exports = {
     '@vue/eslint-config-typescript',
     '@vue/eslint-config-prettier/skip-formatting',
     '@vue/typescript/recommended'
-  ]
+  ],
   parserOptions: {
-    ecmaVersion: 2022
+    ems: 2020
   }
 }
