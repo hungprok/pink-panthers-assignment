@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { Item } from "@/interfaces/item"
-import { API_URL } from '../config.js'
+import { API_URL } from '@/configs/config'
 const requestOptions = {
     headers: { 'Content-Type': 'application/json' }
 }

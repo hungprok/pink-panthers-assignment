@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from '../config.js'
+import { API_URL } from '@/configs/config'
 
 const requestOptions = {
     headers: { 'Content-Type': 'formdata/multipart' }
