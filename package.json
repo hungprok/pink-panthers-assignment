@@ -13,10 +13,16 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.43.5",
+    "axios": "^1.7.2",
+    "axios-observable": "^2.0.0",
+    "rxjs": "^7.8.1",
     "vue": "^3.4.29",
-    "vue-router": "^4.3.3"
+    "vue-router": "^4.3.3",
+    "vuetify": "^3.6.10"
   },
   "devDependencies": {
+    "@mdi/font": "^7.4.47",
     "@rushstack/eslint-patch": "^1.8.0",
     "@tsconfig/node20": "^20.1.4",
     "@types/node": "^20.14.5",
