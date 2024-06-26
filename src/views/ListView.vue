@@ -1,10 +1,5 @@
 <script>
 import ItemCard from '@/components/ItemCard.vue'
-import { createClient } from '@supabase/supabase-js'
-const supabaseUrl = 'https://jnvimtcxfazgaqnnagwt.supabase.co'
-const supabaseKey =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpudmltdGN4ZmF6Z2Fxbm5hZ3d0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxOTA0OTgyOSwiZXhwIjoyMDM0NjI1ODI5fQ.Fy0r8ZMiIMzXVAvOs3IbxYuSwHlBjlp8bZFyoLaIe5w'
-const supabase = createClient(supabaseUrl, supabaseKey)
 import { ItemService } from '@/services/ItemService'
 const itemService = new ItemService()
 import { FileService } from '@/services/FileService'
