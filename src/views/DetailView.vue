@@ -1,6 +1,8 @@
 <script>
 import { ItemService } from '@/services/ItemService'
 const itemService = new ItemService()
+import { FileService } from '@/services/FileService'
+const fileService = new FileService()
 export default {
   data() {
     return {
@@ -29,24 +31,16 @@ export default {
   },
   methods: {
     async submit() {
-      const valid = this.validate()
-      const bucketName = 'pink-panthers-assignment'
-      let images = []
-      if (this.item.images && this.item.images.length) {
-        images = await Promise.all(
-          this.item.images.map(async (file) => {
-            const filePath = `${Date.now()}_${file.name}`
-            const { data: uploadRes } = await supabase.storage
-              .from(bucketName)
-              .upload(filePath, file)
-            const { path } = uploadRes
-            const { data } = await supabase.storage.from(bucketName).getPublicUrl(path)
-            return data.publicUrl
-          })
-        )
-        console.log(images)
-      }
+      const valid = await this.validate()
       if (valid) {
+        let images = []
+        if (this.item.images && this.item.images.length) {
+          const payload = this.constructFormData(this.item.images)
+          const { data } = await fileService.upload(payload)
+          console.log(data)
+          images = data.files.map((image) => image.publicUrl)
+          console.log(images)
+        }
         const { data } = await itemService.updateItem({
           ...this.item,
           images: JSON.stringify(images.length ? images : [])
@@ -57,20 +51,28 @@ export default {
       }
     },
     cancel() {
+      this.$refs.form.resetValidation()
       this.dialog = false
-      this.resetValidation()
     },
     async validate() {
       const { valid } = await this.$refs.form.validate()
       this.dialog = !valid
       return valid
     },
+
     async getItemById(id) {
       const { data } = await itemService.getItemById(id)
       this.item = { ...data[0] }
       this.item.images = this.item.images ? JSON.parse(this.item.images) : []
       console.log(data)
       this.originalItem = { ...this.item }
+    },
+    constructFormData(files) {
+      const formData = new FormData()
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i])
+      }
+      return formData
     }
   },
   async mounted() {
@@ -81,22 +83,19 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex">
-    <h1>Detail of item {{ this.originalItem.title }}</h1>
-    <v-btn @click="dialog = true">Edit</v-btn>
-  </div>
-  <v-row>
-    <v-col cols="6">
-      <v-carousel v-if="this.originalItem.images && this.originalItem.images.length">
-        <v-carousel-item
-          v-for="(image, index) in item.images"
-          :key="index"
-          :src="image"
-          cover
-        ></v-carousel-item>
-      </v-carousel>
-      <p v-html="this.originalItem.description"></p></v-col
-  ></v-row>
+  <v-row class="d-flex">
+    <v-col cols="10">
+      <h1>Detail of item {{ this.originalItem.title }}</h1>
+    </v-col>
+    <v-col cols="2" class="text-right"><v-btn @click="dialog = true">Edit</v-btn></v-col>
+  </v-row>
+  <p v-html="this.originalItem.description"></p>
+
+  <v-row v-if="this.originalItem.images && this.originalItem.images.length">
+    <v-col cols="6" v-for="(image, index) in item.images" :key="index" :src="image" cover>
+      <img :src="image" />
+    </v-col>
+  </v-row>
 
   <div class="text-center pa-4">
     <v-dialog v-model="dialog" max-width="400" persistent>

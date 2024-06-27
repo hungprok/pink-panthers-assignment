@@ -45,16 +45,15 @@ export default {
       })
     },
     async submit() {
-      const valid = this.validate()
-      const bucketName = 'pink-panthers-assignment'
-      let images = []
-      if (this.newItem.images && this.newItem.images.length) {
-        const payload = this.constructFormData(this.newItem.images)
-        const { data } = await fileService.upload(payload)
-        console.log(data)
-        images = data.files.map((image) => image.publicUrl)
-      }
+      const valid = await this.validate()
       if (valid) {
+        let images = []
+        if (this.newItem.images && this.newItem.images.length) {
+          const payload = this.constructFormData(this.newItem.images)
+          const { data } = await fileService.upload(payload)
+          console.log(data)
+          images = data.files.map((image) => image.publicUrl)
+        }
         const { data } = await itemService.addItem({
           ...this.newItem,
           images: JSON.stringify(images)
@@ -63,8 +62,8 @@ export default {
       }
     },
     cancel() {
+      this.$refs.form.resetValidation()
       this.dialog = false
-      this.resetValidation()
     },
     async validate() {
       const { valid } = await this.$refs.form.validate()
@@ -77,6 +76,7 @@ export default {
     constructFormData(files) {
       const formData = new FormData()
       for (let i = 0; i < files.length; i++) {
+        console.log(files[i])
         formData.append('files', files[i])
       }
       return formData
@@ -89,12 +89,17 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex">
-    <h1 class="pr-3">List of items</h1>
-    <v-btn @click="dialog = true">Add new</v-btn>
-  </div>
-  <div class="row">
-    <div v-for="{ id, title, description, images } in this.items" :key="id" class="col-3 p-2">
+  <v-row>
+    <v-col cols="10">
+      <h1 class="pr-3">List of items</h1>
+    </v-col>
+    <v-col cols="2" class="text-right">
+      <v-btn @click="dialog = true">Add new</v-btn>
+    </v-col>
+  </v-row>
+
+  <v-row>
+    <v-col cols="3" v-for="{ id, title, description, images } in this.items" :key="id" class="p-2">
       <ItemCard
         :description="description"
         :title="title"
@@ -102,8 +107,8 @@ export default {
         :id="id"
         @getAllItems="getAllItems"
       ></ItemCard>
-    </div>
-  </div>
+    </v-col>
+  </v-row>
 
   <div class="text-center pa-4">
     <v-dialog v-model="dialog" max-width="400" persistent>

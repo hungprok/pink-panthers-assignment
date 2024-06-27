@@ -30,7 +30,7 @@ export default defineComponent({
 
 <template>
   <div class="card">
-    <v-btn @click="deleteItem()">Delete</v-btn>
+    <v-btn @click="deleteItem()" class="delete-btn">Delete</v-btn>
     <v-carousel v-if="images && images.length">
       <v-carousel-item
         v-for="(image, index) in images"
@@ -56,6 +56,13 @@ export default defineComponent({
   width: 100%;
   max-height: max-content;
   overflow-y: hidden;
+
+  .delete-btn {
+    visibility: hidden;
+  }
+  &:hover .delete-btn {
+    visibility: visible;
+  }
   .card-img-top {
     height: 238px;
     background-size: contain;
@@ -66,6 +73,9 @@ export default defineComponent({
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 }
